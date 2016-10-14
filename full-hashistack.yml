@@ -1,0 +1,15 @@
+session_name: hashistack
+windows:
+  - window_name: consul
+    panes:
+      - ./consul-start.sh
+  - window_name: nomad
+    panes:
+      - ./nomad-start.sh
+  - window_name: fabio
+    panes:
+      - sleep 5 ; ./fabio-start.sh
+  - window_name: start
+    focus: True
+    panes:
+      - ./start.sh
