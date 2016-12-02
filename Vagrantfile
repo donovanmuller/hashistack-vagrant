@@ -7,7 +7,7 @@ sudo apt-get install -y unzip curl wget vim jq tmux python-pip python-dev build-
 sudo pip install tmuxp==1.2.1
 
 # Download Consul
-export CONSUL_VERSION=0.7.0
+export CONSUL_VERSION=0.7.1
 
 echo -e "\e[32mDownloading Consul...\e[0m"
 cd /tmp/
@@ -22,7 +22,7 @@ sudo mkdir -p /etc/consul.d
 sudo chmod a+w /etc/consul.d
 
 # Download Nomad
-export NOMAD_VERSION=0.4.1
+export NOMAD_VERSION=0.5.0
 
 echo -e "\e[32mDownloading Nomad...\e[0m"
 cd /tmp/
@@ -37,11 +37,11 @@ sudo mkdir -p /etc/nomad.d
 sudo chmod a+w /etc/nomad.d
 
 # Download fabio
-export FABIO_VERSION=1.3.2
+export FABIO_VERSION=1.3.5
 
 echo -e "\e[32mDownloading Fabio...\e[0m"
 cd /tmp/
-curl -sSL "https://github.com/eBay/fabio/releases/download/v$FABIO_VERSION/fabio-$FABIO_VERSION-go1.7.1_linux-amd64" -o fabio
+curl -sSL "https://github.com/eBay/fabio/releases/download/v$FABIO_VERSION/fabio-$FABIO_VERSION-go1.7.3-linux-amd64" -o fabio
 
 echo Installing Fabio...
 sudo chmod +x fabio
