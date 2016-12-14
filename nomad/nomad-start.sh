@@ -5,4 +5,4 @@
 
 sudo nomad agent \
   -dev \
-  -config vagrant.hcl
+  -config nomad.hcl

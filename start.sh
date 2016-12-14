@@ -38,6 +38,15 @@ $(nomad server-members)
 
 =========================================================
 
+Vault - https://www.vaultproject.io/
+
+Please see the Vault tmux tab (tab 2) for the unseal and root tokens
+To use the 'vault' CLI, set the vault environment with:
+
+'$ export VAULT_ADDR='http://127.0.0.1:8200''
+
+=========================================================
+
 Fabio - https://github.com/eBay/fabio
 
 The Fabio UI is available at: http://$eth1_ip:9998
@@ -48,10 +57,21 @@ Nomad UI - https://github.com/iverberk/nomad-ui
 
 To start nomad-ui execute the following:
 
-'$ nomad run nomad-ui/nomad-ui.nomad'
+'$ nomad run nomad-ui.nomad'
 
 then once the nomad-ui job is running (check with 'nomad status nomad-ui')
 you can navigate to: http://nomad-ui.hashistack.vagrant
+
+=========================================================
+
+Vault UI - https://github.com/djenriquez/vault-ui
+
+To start vault-ui execute the following:
+
+'$ nomad run vault-ui.nomad'
+
+then once the vault-ui job is running (check with 'nomad status vault-ui')
+you can navigate to: http://vault-ui.hashistack.vagrant
 
 =========================================================
 

@@ -6,6 +6,9 @@ windows:
   - window_name: nomad
     panes:
       - ./nomad-start.sh
+  - window_name: vault
+    panes:
+      - sleep 5 ; ./vault-start.sh
   - window_name: fabio
     panes:
       - sleep 5 ; ./fabio-start.sh

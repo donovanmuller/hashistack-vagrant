@@ -1,4 +1,4 @@
-job "nomad-ui" {
+job "vault-ui" {
 	region = "vagrant"
 
 	datacenters = ["dc1"]
@@ -13,7 +13,7 @@ job "nomad-ui" {
 		max_parallel = 1
 	}
 
-	group "nomad-ui" {
+	group "vault-ui" {
 
 		restart {
 			attempts = 10
@@ -22,19 +22,19 @@ job "nomad-ui" {
 			mode = "delay"
 		}
 
-		task "nomad-ui" {
+		task "vault-ui" {
 			driver = "docker"
 
 			config {
-				image = "iverberk/nomad-ui:latest"
+				image = "djenriquez/vault-ui:latest"
 				port_map {
-					http = 3000
+					http = 8000
 				}
 			}
 
 			service {
-				name = "nomad-ui"
-				tags = ["urlprefix-nomad-ui.hashistack.vagrant/"]
+				name = "vault-ui"
+				tags = ["urlprefix-vault-ui.hashistack.vagrant/"]
 				port = "http"
 				check {
 					name = "alive"
@@ -47,7 +47,7 @@ job "nomad-ui" {
 			}
 
 			env {
-				NOMAD_ADDR = "http://nomad.service.consul:4646"
+				NODE_TLS_REJECT_UNAUTHORIZED = "0"
 			}
 
 			resources {
@@ -56,7 +56,7 @@ job "nomad-ui" {
 				network {
 					mbits = 10
 					port "http" {
-						static = 8000
+						static = 8010
 					}
 				}
 			}

@@ -3,7 +3,7 @@
 
 $script = <<SCRIPT
 sudo apt-get update
-sudo apt-get install -y unzip curl wget vim jq tmux python-pip python-dev build-essential libyaml-dev libpython2.7-dev
+sudo apt-get install -y unzip curl wget vim jq tmux python-pip python-dev build-essential libyaml-dev libpython2.7-dev software-properties-common
 sudo pip install tmuxp==1.2.1
 
 # Download Consul
@@ -22,7 +22,7 @@ sudo mkdir -p /etc/consul.d
 sudo chmod a+w /etc/consul.d
 
 # Download Nomad
-export NOMAD_VERSION=0.5.0
+export NOMAD_VERSION=0.5.1
 
 echo -e "\e[32mDownloading Nomad...\e[0m"
 cd /tmp/
@@ -35,13 +35,29 @@ sudo mv nomad /usr/bin/nomad
 
 sudo mkdir -p /etc/nomad.d
 sudo chmod a+w /etc/nomad.d
+sudo chmod a+w /etc/consul.d
+
+# Download Vault
+export VAULT_VERSION=0.6.3
+
+echo -e "\e[32mDownloading Vault...\e[0m"
+cd /tmp/
+curl -sSL "https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_linux_amd64.zip" -o vault.zip
+
+echo Installing Vault...
+unzip vault.zip
+sudo chmod +x vault
+sudo mv vault /usr/bin/vault
+
+sudo mkdir -p /etc/vault.d
+sudo chmod a+w /etc/vault.d
 
 # Download fabio
 export FABIO_VERSION=1.3.5
 
 echo -e "\e[32mDownloading Fabio...\e[0m"
 cd /tmp/
-curl -sSL "https://github.com/eBay/fabio/releases/download/v$FABIO_VERSION/fabio-$FABIO_VERSION-go1.7.3-linux-amd64" -o fabio
+curl -sSL "https://github.com/eBay/fabio/releases/download/v$FABIO_VERSION/fabio-$FABIO_VERSION-go1.7.3-linux_amd64" -o fabio
 
 echo Installing Fabio...
 sudo chmod +x fabio
@@ -54,29 +70,24 @@ cd ~
 chmod u+x start.sh
 chmod u+x nomad-start.sh
 chmod u+x consul-start.sh
+chmod u+x vault-start.sh
 chmod u+x fabio-start.sh
+
+echo "\e[32mInstalling Java 8 (OpenJDK)...\e[0m"
+sudo apt-add-repository -y ppa:openjdk-r/ppa
+sudo apt-get --allow-unauthenticated update
+sudo apt-get --allow-unauthenticated install -y openjdk-8-jdk
 
 SCRIPT
 
 $post_docker_script = <<SCRIPT
-echo Configuring DNS resolution...
-
-# The below configuration will get overwritten if `sudo resolvconf -u` is run
-# Tried putting it in `/etc/resolvconf/resolv.conf.d/base` but it does not get added at the top
-# which results in Consul never being used for DNS queries.
-sudo tee /etc/resolv.conf << EOF
-nameserver `/sbin/ifconfig eth1 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'`
-nameserver 8.8.8.8
-search service.consul
-EOF
-
 echo Configuring Docker with Consul DNS...
 sudo echo "DOCKER_OPTS='--dns `/sbin/ifconfig docker0 | grep 'inet addr:' | cut -d: -f2 | awk '{print $1}'` \
   --dns 8.8.8.8 \
   --dns-search service.consul'" \
   | sudo tee --append /etc/default/docker
 
-echo Restarting Docker for DNS settings...
+echo "Restarting Docker for DNS settings..."
 sudo restart docker
 
 # Only show /etc/motd and nothing else on vagrant ssh
@@ -94,13 +105,17 @@ SCRIPT
 Vagrant.configure(2) do |config|
   config.vm.box = "puphpet/ubuntu1404-x64"
   config.vm.hostname = "nomad"
-  config.vm.provision "file", source: "nomad/vagrant.hcl", destination: "vagrant.hcl"
+  config.vm.provision "file", source: "nomad/nomad.hcl", destination: "nomad.hcl"
   config.vm.provision "file", source: "nomad/nomad-start.sh", destination: "nomad-start.sh"
   config.vm.provision "file", source: "consul/consul-start.sh", destination: "consul-start.sh"
+  config.vm.provision "file", source: "vault/vault.hcl", destination: "vault.hcl"
+  config.vm.provision "file", source: "vault/vault-start.sh", destination: "vault-start.sh"
   config.vm.provision "file", source: "fabio/fabio-start.sh", destination: "fabio-start.sh"
   config.vm.provision "file", source: "nomad-ui/nomad-ui.nomad", destination: "nomad-ui.nomad"
+  config.vm.provision "file", source: "vault-ui/vault-ui.nomad", destination: "vault-ui.nomad"
   config.vm.provision "file", source: "full-hashistack.yml", destination: "full-hashistack.yml"
   config.vm.provision "file", source: "start.sh", destination: "start.sh"
+  config.vm.provision "shell", path: "dns.sh", run: "always"
   config.vm.provision "shell", inline: $script, privileged: false, keep_color: true
   # Before we copy to /etc/fabio.d/fabio.properties, it must be created first by $script.
   config.vm.provision "file", source: "fabio/fabio.properties", destination: "/etc/fabio.d/fabio.properties"

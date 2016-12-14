@@ -2,8 +2,10 @@
 
 A Vagrant managed VM based on the [demo Vagrantfile](https://raw.githubusercontent.com/hashicorp/nomad/master/demo/vagrant/Vagrantfile)
 used in the [Getting Started](https://www.nomadproject.io/intro/getting-started/install.html)
-guide for the [Nomad](https://www.nomadproject.io) project, which adds [Consul](https://www.consul.io/), 
-[Fabio](https://github.com/eBay/fabio) load balancer and [Nomad UI](https://github.com/iverberk/nomad-ui) to form a minimal implementation of a 
+guide for the [Nomad](https://www.nomadproject.io) project, which adds [Consul](https://www.consul.io/),
+[Vault](https://www.vaultproject.io/),
+[Fabio](https://github.com/eBay/fabio) load balancer, [Nomad UI](https://github.com/iverberk/nomad-ui)
+and [Vault UI](https://github.com/djenriquez/vault-ui) to form a minimal implementation of a
 ["Hashistack"](https://twitter.com/hashtag/hashistack) for local development purposes.
 
 ## Quickstart
@@ -44,6 +46,9 @@ Allocations
 ID        Eval ID   Node ID   Task Group  Desired  Status   Created At
 72181329  1aa7fe03  ac32b972  nomad-ui    run      running  10/14/16 08:17:10 UTC
 vagrant@hashistack:~$
+
+# TODO
+# Add vault-ui
 ```
 
 then in your browser, go to: http://nomad-ui.hashistack.vagrant/
@@ -62,7 +67,7 @@ $ git clone https://github.com/donovanmuller/hashistack-vagrant.git
 
 ### Provisioning the Hashistack VM
 
-#### Vagrant prerequisites 
+#### Vagrant prerequisites
 
 It goes without saying that you should have [Vagrant](https://www.vagrantup.com/docs/getting-started/) installed.
 The stack also requires the [Landrush plugin](https://github.com/vagrant-landrush/landrush) for DNS.
@@ -75,20 +80,22 @@ $ vagrant plugin install landrush
 #### Create and provision
 
 Create and provision the Hashistack VM with Vagrant by running `vagrant up` in the root of the cloned project:
- 
+
  ```bash
  $ # git clone https://github.com/donovanmuller/hashistack-vagrant.git
  $ cd hashistack-vagrant
  $ vagrant up
  ```
- 
+
 This will take a moment as it downloads and installs the following components:
 
-* Consul - [0.7.0](https://www.consul.io/downloads.html)
-* Nomad - [0.4.1](https://www.nomadproject.io/downloads.html)
-* Fabio - [1.3.3](https://github.com/eBay/fabio/releases/tag/v1.3.3)
+* Consul - [0.7.1](https://www.consul.io/downloads.html)
+* Nomad - [0.5.1](https://www.nomadproject.io/downloads.html)
+* Vault - [0.6.3](https://www.vaultproject.io/downloads.html)
+* Fabio - [1.3.5](https://github.com/eBay/fabio/releases/tag/v1.3.3)
 * tmux/tmuxp - [1.2.1](https://github.com/tony/tmuxp)
 * Docker
+* Java 8 - OpenJDK 8
 
 #### DNS with Landrush
 
@@ -98,7 +105,7 @@ domain, `hashistack.vagrant`.
 ##### Fabio
 
 The main use for this is exposing services via Fabio.
-This allows the `hashistack.vagrant` domain to be used as a wildcard domain, so that all 
+This allows the `hashistack.vagrant` domain to be used as a wildcard domain, so that all
 exposed services can be resolved via DNS queries, for example `my-app.hashistack.vagrant`.
 Assuming that `my-app` has a route entry configured in Fabio.
 
@@ -118,18 +125,19 @@ Then as the `motd` banner suggests, start a `tmux` session with:
 $ tmuxp load full-hashistack.yml
 ```
 
-This will open 4 windows, each window containing the following:
+This will open 5 windows, each window containing the following:
 
 * Window 0 (`consul`) - Start Consul agent in development mode.
 * Window 1 (`nomad`) - Start Nomad in development mode as server and client
-* Window 2 (`fabio`) - Start Fabio configured to connect to Consul on Window 1
-* Window 3 (`start`) - A shell session that you can use to work with the [Nomad CLI](https://www.nomadproject.io/docs/commands/index.html) etc.
+* Window 2 (`vault`) - Start Vault in development mode as server
+* Window 3 (`fabio`) - Start Fabio configured to connect to Consul on Window 1
+* Window 4 (`start`) - A shell session that you can use to work with the [Nomad CLI](https://www.nomadproject.io/docs/commands/index.html) etc.
 
-Window 3 (`start`) will focus on start and presents you with an overview of the components running in the stack:
+Window 4 (`start`) will focus on start and presents you with an overview of the components running in the stack:
 
 For more commands available when using tmux, please see [this cheatsheet](https://gist.github.com/MohamedAlaa/2961058) .
 
-![Hashistack in tmux session](/docs/images/hashistack-tmux.png)
+![Hashistack in tmux session](/docs/images/hashistack-vagrant.png)
 
 You can now schedule jobs using `nomad`.
 
@@ -177,7 +185,19 @@ http://nomad-ui.hashistack.vagrant
 
 note the URL uses the `hashistack.vagrant` domain, as the Nomad UI is routed via Fabio (check `nomad-ui/nomad-ui.nomad` for details).
 
+### Vault UI
 
+[Vault UI](https://github.com/djenriquez/vault-ui) is valuable as a quick glance into Vault via a web interface.
 
+Vault UI is run as a Nomad job, where the `vault-ui/vault-ui.nomad` job definition file is included
+in this project. To schedule the `vault-ui` job:
 
+```bash
+$ nomad run vault-ui.nomad
+```
 
+wait until it's running and then is should be available on:
+
+http://vault-ui.hashistack.vagrant
+
+note the URL uses the `hashistack.vagrant` domain, as the Nomad UI is routed via Fabio (check `vault-ui/vault-ui.nomad` for details).
