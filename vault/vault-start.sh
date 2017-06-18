@@ -5,4 +5,5 @@
 
 sudo vault server \
   -dev \
+  -dev-root-token-id="hashistack"
   -config vault.hcl

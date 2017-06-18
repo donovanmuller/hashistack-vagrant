@@ -7,7 +7,7 @@ sudo apt-get install -y unzip curl wget vim jq tmux python-pip python-dev build-
 sudo pip install tmuxp==1.2.1
 
 # Download Consul
-export CONSUL_VERSION=0.7.1
+export CONSUL_VERSION=0.8.4
 
 echo -e "\e[32mDownloading Consul...\e[0m"
 cd /tmp/
@@ -22,7 +22,7 @@ sudo mkdir -p /etc/consul.d
 sudo chmod a+w /etc/consul.d
 
 # Download Nomad
-export NOMAD_VERSION=0.5.1
+export NOMAD_VERSION=0.5.6
 
 echo -e "\e[32mDownloading Nomad...\e[0m"
 cd /tmp/
@@ -38,7 +38,7 @@ sudo chmod a+w /etc/nomad.d
 sudo chmod a+w /etc/consul.d
 
 # Download Vault
-export VAULT_VERSION=0.6.3
+export VAULT_VERSION=0.7.3
 
 echo -e "\e[32mDownloading Vault...\e[0m"
 cd /tmp/
@@ -53,11 +53,11 @@ sudo mkdir -p /etc/vault.d
 sudo chmod a+w /etc/vault.d
 
 # Download fabio
-export FABIO_VERSION=1.3.5
+export FABIO_VERSION=1.5.0
 
 echo -e "\e[32mDownloading Fabio...\e[0m"
 cd /tmp/
-curl -sSL "https://github.com/eBay/fabio/releases/download/v$FABIO_VERSION/fabio-$FABIO_VERSION-go1.7.3-linux_amd64" -o fabio
+curl -sSL "https://github.com/eBay/fabio/releases/download/v$FABIO_VERSION/fabio-$FABIO_VERSION-go1.8.3-linux_amd64" -o fabio
 
 echo Installing Fabio...
 sudo chmod +x fabio
@@ -88,7 +88,7 @@ sudo echo "DOCKER_OPTS='--dns `/sbin/ifconfig docker0 | grep 'inet addr:' | cut 
   | sudo tee --append /etc/default/docker
 
 echo "Restarting Docker for DNS settings..."
-sudo restart docker
+sudo systemctl restart docker
 
 # Only show /etc/motd and nothing else on vagrant ssh
 sudo rm /etc/update-motd.d/00-header
@@ -96,14 +96,14 @@ sudo rm /etc/update-motd.d/91-release-upgrade
 sudo rm /etc/update-motd.d/10-help-text
 sudo mv motd /etc/motd
 sudo sed -i -e 's/PrintLastLog yes/PrintLastLog no/g' /etc/ssh/sshd_config
-sudo restart ssh
+sudo systemctl restart ssh
 
 echo -e "\e[36mDone \xE2\x9C\x93\e[0m"
 
 SCRIPT
 
 Vagrant.configure(2) do |config|
-  config.vm.box = "puphpet/ubuntu1404-x64"
+  config.vm.box = "puphpet/ubuntu1604-x64"
   config.vm.hostname = "nomad"
   config.vm.provision "file", source: "nomad/nomad.hcl", destination: "nomad.hcl"
   config.vm.provision "file", source: "nomad/nomad-start.sh", destination: "nomad-start.sh"
@@ -124,8 +124,8 @@ Vagrant.configure(2) do |config|
   config.vm.provision "shell", inline: $post_docker_script, privileged: false, keep_color: true
 
   # Resources and network settings
-  $memory = "2048"
-  $cpu = 2
+  $memory = "4096"
+  $cpu = 4
   $private_ip = "172.16.0.2"
   $tld = "hashistack.vagrant"
 

@@ -26,7 +26,7 @@ job "nomad-ui" {
 			driver = "docker"
 
 			config {
-				image = "iverberk/nomad-ui:latest"
+				image = "jippi/hashi-ui:latest"
 				port_map {
 					http = 3000
 				}
@@ -47,7 +47,10 @@ job "nomad-ui" {
 			}
 
 			env {
+				NOMAD_ENABLE = 1
 				NOMAD_ADDR = "http://nomad.service.consul:4646"
+				CONSUL_ENABLE = 1
+				CONSUL_ADDR = "172.16.0.2:8500"
 			}
 
 			resources {

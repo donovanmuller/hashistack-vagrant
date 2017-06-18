@@ -18,7 +18,7 @@ do
   fi
 done
 
-eth1_ip=$(/sbin/ifconfig eth1 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
+eth_ip=$(/sbin/ifconfig enp0s8 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
 
 cat << EOF
 
@@ -26,7 +26,7 @@ The Vagrant Hashistack contains the following components:
 
 Consul - https://www.consul.io/
 
-The consul UI is available at: http://$eth1_ip:8500
+The consul UI is available at: http://$eth_ip:8500
 
 $(consul members)
 
@@ -43,13 +43,13 @@ Vault - https://www.vaultproject.io/
 Please see the Vault tmux tab (tab 2) for the unseal and root tokens
 To use the 'vault' CLI, set the vault environment with:
 
-'$ export VAULT_ADDR='http://127.0.0.1:8200''
+'$ export VAULT_ADDR='http://127.0.0.1:8200'
 
 =========================================================
 
 Fabio - https://github.com/eBay/fabio
 
-The Fabio UI is available at: http://$eth1_ip:9998
+The Fabio UI is available at: http://$eth_ip:9998
 
 =========================================================
 

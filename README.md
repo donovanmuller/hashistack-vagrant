@@ -46,9 +46,6 @@ Allocations
 ID        Eval ID   Node ID   Task Group  Desired  Status   Created At
 72181329  1aa7fe03  ac32b972  nomad-ui    run      running  10/14/16 08:17:10 UTC
 vagrant@hashistack:~$
-
-# TODO
-# Add vault-ui
 ```
 
 then in your browser, go to: http://nomad-ui.hashistack.vagrant/
@@ -89,10 +86,10 @@ Create and provision the Hashistack VM with Vagrant by running `vagrant up` in t
 
 This will take a moment as it downloads and installs the following components:
 
-* Consul - [0.7.1](https://www.consul.io/downloads.html)
-* Nomad - [0.5.1](https://www.nomadproject.io/downloads.html)
-* Vault - [0.6.3](https://www.vaultproject.io/downloads.html)
-* Fabio - [1.3.5](https://github.com/eBay/fabio/releases/tag/v1.3.3)
+* Consul - [0.8.4](https://www.consul.io/downloads.html)
+* Nomad - [0.5.6](https://www.nomadproject.io/downloads.html)
+* Vault - [0.7.3](https://www.vaultproject.io/downloads.html)
+* Fabio - [1.5.0](https://github.com/eBay/fabio/releases/tag/v1.3.3)
 * tmux/tmuxp - [1.2.1](https://github.com/tony/tmuxp)
 * Docker
 * Java 8 - OpenJDK 8

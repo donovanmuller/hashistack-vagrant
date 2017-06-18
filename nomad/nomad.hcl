@@ -23,7 +23,7 @@ enable_debug = true
 client {
   enabled = true
   # Allow the Nomad client to be accessed from Docker containers.
-  network_interface = "eth0"
+  network_interface = "enp0s8"
   options {
     # Do not remove Docker images on stopping jobs. Avoids wasting bandwidth pulling images.
     docker.cleanup.image = false
