@@ -7,7 +7,7 @@ sudo apt-get install -y unzip curl wget vim jq tmux python-pip python-dev build-
 sudo pip install tmuxp==1.2.1
 
 # Download Consul
-export CONSUL_VERSION=0.8.4
+export CONSUL_VERSION=0.9.0
 
 echo -e "\e[32mDownloading Consul...\e[0m"
 cd /tmp/
@@ -22,6 +22,7 @@ sudo mkdir -p /etc/consul.d
 sudo chmod a+w /etc/consul.d
 
 # Download Nomad
+#export NOMAD_VERSION=0.6.0 - see https://github.com/donovanmuller/spring-cloud-dataflow-server-nomad/issues/11
 export NOMAD_VERSION=0.5.6
 
 echo -e "\e[32mDownloading Nomad...\e[0m"
@@ -53,7 +54,7 @@ sudo mkdir -p /etc/vault.d
 sudo chmod a+w /etc/vault.d
 
 # Download fabio
-export FABIO_VERSION=1.5.0
+export FABIO_VERSION=1.5.2
 
 echo -e "\e[32mDownloading Fabio...\e[0m"
 cd /tmp/

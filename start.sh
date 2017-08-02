@@ -2,7 +2,7 @@
 
 # Docker doesn't like coming back up from a halted vm, so restart it.
 echo "Restarting Docker..."
-sudo restart docker >/dev/null
+sudo systemctl restart docker >/dev/null
 
 # wait (maximum of 6 times, with an interval of 10 seconds for a total of 60 seconds) for nomad to be up.
 echo "Waiting for 'nomad' to start..."

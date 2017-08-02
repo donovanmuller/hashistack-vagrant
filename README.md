@@ -86,10 +86,10 @@ Create and provision the Hashistack VM with Vagrant by running `vagrant up` in t
 
 This will take a moment as it downloads and installs the following components:
 
-* Consul - [0.8.4](https://www.consul.io/downloads.html)
+* Consul - [0.9.0](https://www.consul.io/downloads.html)
 * Nomad - [0.5.6](https://www.nomadproject.io/downloads.html)
 * Vault - [0.7.3](https://www.vaultproject.io/downloads.html)
-* Fabio - [1.5.0](https://github.com/eBay/fabio/releases/tag/v1.3.3)
+* Fabio - [1.5.2](https://github.com/eBay/fabio/releases/tag/v1.3.3)
 * tmux/tmuxp - [1.2.1](https://github.com/tony/tmuxp)
 * Docker
 * Java 8 - OpenJDK 8
